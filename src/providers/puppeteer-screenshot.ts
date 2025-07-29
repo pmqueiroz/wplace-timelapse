@@ -43,14 +43,13 @@ export class PuppeteerScreenshotProvider implements ScreenshotProvider {
 
       page.on('console', msg => {
         console.log('PAGE LOG >', msg.text());
+        console.log(msg)
       });
-      
+
       await page.goto(url, { 
         waitUntil: this.config.waitUntil 
       });
 
-      await page.waitForSelector('canvas');
-      
       await page.evaluate(() => {
         return new Promise((resolve) => {
           if (document.readyState === 'complete') {
