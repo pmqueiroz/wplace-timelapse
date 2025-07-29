@@ -1,12 +1,10 @@
-import { validateEnvironment, getTargetUrl } from './config/environment.js';
+import { getTargetUrl } from './config/environment.js';
 import { getScreenshotFolder, getScreenshotFilename } from './utils/date-utils.js';
 import { ensureDirectoryExists, getFullScreenshotPath } from './utils/file-utils.js';
 import { takeScreenshot } from './services/screenshot-service.js';
 
 async function main(): Promise<void> {
   try {
-    validateEnvironment();
-    
     const url: string = getTargetUrl();
     const folder: string = getScreenshotFolder();
     const filename: string = getScreenshotFilename();

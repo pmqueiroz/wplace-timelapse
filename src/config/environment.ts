@@ -7,7 +7,3 @@ export function getTargetUrl(): string {
   
   return url;
 }
-
-export function validateEnvironment(): void {
-  getTargetUrl();
-}
