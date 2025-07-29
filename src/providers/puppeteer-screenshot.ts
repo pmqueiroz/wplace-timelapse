@@ -8,7 +8,14 @@ export class PuppeteerScreenshotProvider implements ScreenshotProvider {
     this.config = {
       waitUntil: 'networkidle2',
       fullPage: true,
-      args: ['--no-sandbox'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--use-gl=desktop'
+      ],
+      width: 1920,
+      height: 1080,
+      deviceScaleFactor: 1,
       ...config
     };
   }
@@ -28,10 +35,32 @@ export class PuppeteerScreenshotProvider implements ScreenshotProvider {
       browser = await puppeteer.launch(browserConfig);
       const page: Page = await browser.newPage();
       
+      await page.setViewport({
+        width: this.config.width!,
+        height: this.config.height!,
+        deviceScaleFactor: this.config.deviceScaleFactor!
+      });
+
+      page.on('console', msg => {
+        console.log('PAGE LOG >', msg.text());
+      });
+      
       await page.goto(url, { 
         waitUntil: this.config.waitUntil 
       });
+
+      await page.waitForSelector('canvas');
       
+      await page.evaluate(() => {
+        return new Promise((resolve) => {
+          if (document.readyState === 'complete') {
+            setTimeout(resolve, 1000);
+          } else {
+            window.addEventListener('load', () => setTimeout(resolve, 1000));
+          }
+        });
+      });
+
       await page.screenshot({ 
         path: outputPath, 
         fullPage: this.config.fullPage 
