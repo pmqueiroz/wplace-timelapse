@@ -14,10 +14,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - run: npm start
+      
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      
+      - run: pnpm install --frozen-lockfile
+      
+      - run: pnpm run build
+      
+      - run: pnpm start
         env:
           TARGET_URL: ${{ secrets.TARGET_URL }}
       - uses: stefanzweifel/git-auto-commit-action@v5
