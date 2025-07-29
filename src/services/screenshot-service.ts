@@ -1,37 +1,26 @@
-import puppeteer, { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer';
+import { ScreenshotProvider } from '../interfaces/screenshot.js';
+import { PuppeteerScreenshotProvider } from '../providers/puppeteer-screenshot.js';
 
-const BROWSER_CONFIG: PuppeteerLaunchOptions = {
-  args: ['--no-sandbox']
-};
+class ScreenshotService {
+  private provider: ScreenshotProvider;
 
-const PAGE_CONFIG = {
-  waitUntil: 'networkidle2' as const
-};
+  constructor(provider?: ScreenshotProvider) {
+    this.provider = provider || new PuppeteerScreenshotProvider();
+  }
+
+  async takeScreenshot(url: string, outputPath: string): Promise<void> {
+    return this.provider.takeScreenshot(url, outputPath);
+  }
+
+  setProvider(provider: ScreenshotProvider): void {
+    this.provider = provider;
+  }
+}
+
+export const screenshotService = new ScreenshotService();
+
+export { ScreenshotService };
 
 export async function takeScreenshot(url: string, outputPath: string): Promise<void> {
-  if (!url) {
-    throw new Error('URL is required for taking screenshot');
-  }
-
-  let browser: Browser | undefined;
-  
-  try {
-    browser = await puppeteer.launch(BROWSER_CONFIG);
-    const page: Page = await browser.newPage();
-    await page.goto(url, PAGE_CONFIG);
-    await page.screenshot({ 
-      path: outputPath, 
-      fullPage: true 
-    });
-    
-    console.log(`Screenshot saved to: ${outputPath}`);
-    
-  } catch (error) {
-    console.error('Error taking screenshot:', (error as Error).message);
-    throw error;
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
-  }
+  return screenshotService.takeScreenshot(url, outputPath);
 }
