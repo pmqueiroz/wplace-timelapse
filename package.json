@@ -1,0 +1,26 @@
+{
+  "name": "wplace-timelapse",
+  "version": "1.0.0",
+  "description": "A Node.js application that takes screenshots of web pages for creating timelapses",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "tsx src/main.ts",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean"
+  },
+  "keywords": ["screenshot", "timelapse", "puppeteer", "automation"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "typescript": "^5.2.0",
+    "tsx": "^3.12.0",
+    "rimraf": "^5.0.0"
+  }
+}
